@@ -3,12 +3,14 @@
 # cgit-docker compose example
 services:
   cgit:
-    build:
-      context: .
-      dockerfile: Dockerfile
     # You can also use the pre-built containers hosted at ghcr and docker.
     # image: ghcr.io/bigratdad/cgit:latest
     # image: ratdad/cgit:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # args:
+      #   - ENABLE_GIT_HTTP=0
     env_file:
       - .env
     ports:
@@ -16,6 +18,5 @@ services:
     volumes:
       # - ./favicon.ico:/srv/www/htdocs/cgit/favicon.ico # custom favicon
       # - ./cgit.css:/srv/www/htdocs/cgit/cgit.css # custom cgit.css
-      - ./etc/httpd/conf/httpd.conf:/etc/httpd/conf/httpd.conf # You may want to change the httpd config on the server.
-      - ./etc/cgitrc:/etc/cgitrc # You can (and should) bind your own cgitrc.
-      - ./srv/git/:/srv/git # Bind the location of your git repos to /srv/git in the container.
+      - ./etc/cgitrc:/etc/cgitrc # You can (and should) bindmount your own cgitrc.
+      - ./srv/git/:/srv/git:ro # I do not recommend creating repos from inside the container. Make it read-only.

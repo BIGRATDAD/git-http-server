@@ -9,13 +9,20 @@ robots=noindex, nofollow
 snapshots=tar.gz tar.bz2 zip
 source-filter=/opt/highlight.sh
 
+# Assets
+css=/cgit.css
+logo=/cgit.png
+favicon=/favicon.ico
+
 #
-# Site Settings
+# Behavior Settings
 enable-index-links=1
 enable-remote-branches=1
 enable-log-filecount=1
 enable-log-linecount=1
+enable-http-clone=1
 enable-git-config=1
+remove-suffix=1
 
 #
 # Cache Settings
@@ -23,8 +30,7 @@ cache-root=/var/cache/cgit
 cache-size=1000
 
 #
-# List of common mimetypes
-#
+# Mimetypes
 mimetype.gif=image/gif
 mimetype.html=text/html
 mimetype.jpg=image/jpeg
@@ -65,6 +71,6 @@ readme=:install.txt
 readme=:INSTALL
 readme=:install
 
-# NOTE: According to the cgit mailing list, these options should go last.
+# Don't change.
 virtual-root=/
 scan-path=/srv/git

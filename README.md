@@ -13,6 +13,21 @@ You can optionally run with HTTP Basic Auth with these options.
 docker run --name cgit -d -p 80:80 -v git/repo/location:/srv/git -e HTTP_AUTH_PASSWORD=pass HTTP_AUTH_USER=user
 ``` 
 
+## Docker Build
+```bash
+# Push-only
+docker build --build-arg GIT_HTTP_MODE=w -t cgit:push-only .
+
+# Full RW
+docker build --build-arg GIT_HTTP_MODE=rw -t cgit:rw .
+
+# Read-only
+docker build --build-arg GIT_HTTP_MODE=ro -t cgit:ro .
+
+# No Git HTTP at all
+docker build --build-arg GIT_HTTP_MODE=off -t cgit:no-http .
+```
+
 ## Docker Compose
 You can use Docker Compose to create an instance of the server.
 ```yaml
@@ -52,5 +67,4 @@ Runtime configuration is done via a `cgitrc` file placed in `/etc/cgitrc` on the
 This container runs Apache Web Server. I made this decision because it's one of the few http servers that has built support for Common Gateway Interface. 
 
 **To configure**, just mount your custom `httpd.conf` to `/etc/httpd/conf/httpd.conf` inside the container. Just keep in mind that cgit is compiled to serve its files in `/srv/www/htdocs/cgit/` and not the default location of `/var/www/htdocs/cgit/` as the documentation states. This is a decision I made deliberately because `/srv/` is where server files should go.
-
 

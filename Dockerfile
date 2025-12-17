@@ -1,6 +1,6 @@
 #
 #
-# cgit-http-server Docker Container
+# docker-cgit Docker Container
 ###################
 # Build Stage
 ###################

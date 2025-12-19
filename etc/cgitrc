@@ -7,7 +7,9 @@
 # Global Settings
 robots=noindex, nofollow
 snapshots=tar.gz tar.bz2 zip
-source-filter=/opt/highlight.sh
+source-filter=/usr/local/lib/cgit/filters/syntax-highlighting.py
+about-filter=/usr/local/lib/cgit/filters/about-formatting.py
+commit-filter=/usr/local/lib/cgit/fiters/commit-links.sh
 
 # Assets
 css=/cgit.css

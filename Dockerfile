@@ -1,6 +1,6 @@
 #
 #
-# docker-cgit Docker Container
+# cgit-docker Docker Container
 ###################
 # Build Stage
 ###################
@@ -31,12 +31,15 @@ LABEL MAINTAINER="RATDAD <lambda@disroot.org>"
 
 # Runtime dependencies
 RUN dnf -y update && dnf -y install \
-    httpd git highlight \
+    httpd git highlight pip groff \
     openssl zlib zip \
     && dnf clean all
 
 # Install cgit artifacts.
 COPY --from=builder /build/install /
+
+# Install formatting tools
+RUN pip install pygments catppuccin[pygments] markdown docutils
 
 # If set to 0, the container will not \
 # handle git-http-backend for you.
@@ -51,13 +54,6 @@ ADD etc/httpd/conf.d/git-http-p.conf /etc/httpd/conf.d/git-http-p.conf
 ADD etc/httpd/conf.d/git-http-cf.conf  /etc/httpd/conf.d/git-http-cf.conf
 ADD etc/httpd/conf.d/git-http-pcf.conf /etc/httpd/conf.d/git-http-pcf.conf
 ADD etc/httpd/conf.d/git-http-apcf.conf /etc/httpd/conf.d/git-http-apcf.conf
-
-# Add helper scripts.
-COPY opt/ /opt
-RUN chmod +x /opt/*
-
-# Prevent git-http-backend safe.directory errors.
-RUN git config --system --add safe.directory /srv/git
 
 # Entrypoint.
 COPY ./entrypoint.sh /

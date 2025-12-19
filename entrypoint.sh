@@ -1,11 +1,10 @@
 #!/bin/bash
 set -e
 
-export GIT_HTTP_MODE="${GIT_HTTP_MODE:-0}" # Default: disabled
-export GIT_HTTP_AUTH=0 # whether http auth is enabled for git-http-backend
-export GIT_HTTP_AUTH_FILE="${GIT_HTTP_AUTH_FILE:-/srv/git/.htpasswd}"
-# Explicitly override for single .htpasswd for cgit/git-http-server
-# GIT_HTTP_AUTH_FILE=/srv/www/htdocs/cgit/.htpasswd
+export GIT_HTTP_MODE=${GIT_HTTP_MODE:-0} # This is whether git-http-backend is enabled. Default: disabled
+export GIT_HTTP_AUTH=0 # This is whether git-http-backend comes with http basic auth. Default: disabled
+export GIT_HTTP_AUTH_FILE="${GIT_HTTP_AUTH_FILE:-/srv/git/.htpasswd}" # htpasswd location
+
 CONF_DIR="/etc/httpd/conf.d"
 ACTIVE_CONF="${CONF_DIR}/git-http.conf"
 
@@ -13,28 +12,28 @@ ACTIVE_CONF="${CONF_DIR}/git-http.conf"
 rm -f "${ACTIVE_CONF}"
 
 # HTTP BASIC AUTH FOR GIT
-# Options are 0=disable
-# 1=push only, 2=clone/fetch only, 
-# 3=push,clone/fetch, 4=push,clone/fetch w/auth
+# Options are 1=push only, 2=clone/fetch only, \
+# 3=push,clone/fetch, 4=push,clone/fetch (auth for both) \
+# Default: 0 = Disabled
 case "${GIT_HTTP_MODE}" in
   0) ;;
   1)
     ln -s "${CONF_DIR}/git-http-p.conf" "${ACTIVE_CONF}"
-    echo "Using [git-http] Using Mode 1: git push (auth)"
+    echo "Using [git-http] Using Mode 1: Authenticated Pushing Enabled"
     GIT_HTTP_AUTH=1
     ;;
   2)
     ln -s "${CONF_DIR}/git-http-cf.conf" "${ACTIVE_CONF}"
-    echo "[git-http] Using Mode 2: git clone/fetch only (no auth)"
+    echo "[git-http] Using Mode 2: Unauthenticated Cloning/Fetching Enabled"
     ;;
   3)
     ln -s "${CONF_DIR}/git-http-pcf.conf" "${ACTIVE_CONF}"
-    echo "[git-http] Using Mode 3: git push (auth) + git clone/fetch (no auth)"
+    echo "[git-http] Using Mode 3: Authenticated Pushing + Unauthenticated Cloning/Fetching Enabled"
     GIT_HTTP_AUTH=1
     ;;
   4)
     ln -s "${CONF_DIR}/git-http-apcf.conf" "${ACTIVE_CONF}"
-    echo "[git-http] Using Mode 4: git push + git clone/fetch (auth)"
+    echo "[git-http] Using Mode 4: Authenticated Pushing, Cloning and Fetching Enabled"
     GIT_HTTP_AUTH=1
     ;;
   *)
@@ -65,6 +64,7 @@ if [ "$GIT_HTTP_AUTH" -eq 1 ]; then
   chmod 640 "$GIT_HTTP_AUTH_FILE"
 fi
 
+#
 # HTTP BASIC AUTH FOR CGIT
 if [ -n "$HTTP_AUTH_PASSWORD" ]; then
   HTTP_AUTH_USER="${HTTP_AUTH_USER:-admin}"

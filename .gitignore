@@ -1,2 +1,4 @@
 # Don't include the test files
+srv/
 srv/*
+.editorconfig
